@@ -1,0 +1,44 @@
+{
+  "siteUrl": "https://waleedkhan-633.github.io/",
+  "customDomain": "",
+  "description": "Senior Frontend Engineer and Tech Lead with 9+ years building large-scale React and Vue.js applications — micro-frontend architecture, design systems, and frontend performance.",
+  "hero": {
+    "intro": "9+ years shipping large-scale React and Vue.js applications for US retail and healthcare — micro-frontend architecture, design systems, and frontend performance. I lead frontend teams at Nisum and stay hands-on in architecture and code review.",
+    "leading": "12 engineers across 3 projects"
+  },
+  "about": {
+    "paragraphs": [
+      "I started as a UI developer turning high-fidelity designs into responsive pages with hand-written CSS, then moved into React product work — owning the frontend for Nextu, used by 100,000+ people, and building a startup’s first MVP end to end as its sole engineer.",
+      "At Nisum since 2021, I’ve built frontend platforms for a Fortune-500 US home and furnishings retailer: micro-frontend and mono-repo foundations, a shared component library, and a Backend-for-Frontend layer. I’ve led frontend teams the whole time, and as Tech Lead I now own estimation, solution design, and capacity planning across concurrent projects.",
+      "I’ve mentored 10+ engineers, three of whom were promoted, and I interview frontend candidates and run internal sessions on micro-frontend architecture and testing strategy."
+    ],
+    "focus": "Micro-frontend architecture, design systems, Core Web Vitals and accessibility, testing strategy, AI-assisted workflows."
+  },
+  "experience": {
+    "maxHighlightsPerRole": 3
+  },
+  "extraProjects": [
+    {
+      "org": "Nisum",
+      "name": "ShopByStyle",
+      "description": "A fixed-bid e-commerce program built on runtime composition instead of a single SPA. I architected the mono-repo and micro-frontend foundation so independent teams could deploy without coordinated releases.",
+      "tags": ["Module Federation", "Mono-repo", "Vue.js"]
+    },
+    {
+      "org": "Pcybil",
+      "name": "Company MVP",
+      "description": "The company’s first product, delivered end to end as sole engineer — React frontend, Node/Express REST APIs, and MongoDB schema.",
+      "tags": ["React", "Node.js", "Express", "MongoDB"]
+    },
+    {
+      "org": "Diya Interactive",
+      "name": "Nextu & Saaya Health",
+      "description": "Responsive, cross-browser product interfaces — Nextu serving 100,000+ users globally. Owned the frontend and partnered with UI/UX on flow redesigns that lifted conversion 20%.",
+      "tags": ["React", "Redux", "CSS3"]
+    }
+  ],
+  "contact": {
+    "pitch": "Hiring for a senior frontend or technical leadership role? I’d like to hear about it.",
+    "note": "Based in Karachi, open to remote. Email is the fastest way to reach me."
+  }
+}

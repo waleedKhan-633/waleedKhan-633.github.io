@@ -1,0 +1,115 @@
+name: Deploy portfolio to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    # Only rebuild when something that affects the site changes (README edits etc. are skipped).
+    paths:
+      - "public/**"
+      - "src/**"
+      - "content/**"
+      - "scripts/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; never cancel a deploy that's already running.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Extract résumé & build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect résumé change
+        id: changes
+        run: |
+          if git rev-parse --verify -q HEAD^ >/dev/null && git diff --quiet HEAD^ HEAD -- public/resume.pdf; then
+            echo "resume=false" >> "$GITHUB_OUTPUT"
+            echo "Résumé PDF unchanged in this push — re-extracting anyway (deterministic)."
+          else
+            echo "resume=true" >> "$GITHUB_OUTPUT"
+            echo "Résumé PDF changed in this push."
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund --omit=optional
+          else
+            npm install --no-audit --no-fund --omit=optional
+          fi
+
+      - name: Parser unit tests
+        run: npm test
+
+      - name: OCR scanned résumé (optional)
+        if: vars.RESUME_OCR == 'true'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ocrmypdf
+          mkdir -p build
+          ocrmypdf --skip-text --output-type pdf public/resume.pdf build/resume-ocr.pdf
+          echo "RESUME_PDF=build/resume-ocr.pdf" >> "$GITHUB_ENV"
+
+      - name: Extract résumé → build/resume.json
+        run: npm run extract
+        env:
+          RESUME_CHANGED: ${{ steps.changes.outputs.resume }}
+
+      - name: Build site
+        run: npm run build
+
+      - name: Verify build output
+        run: npm run verify
+
+      - name: Upload extracted résumé data (for review)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resume-data
+          path: |
+            build/resume.json
+            build/resume.lines.txt
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

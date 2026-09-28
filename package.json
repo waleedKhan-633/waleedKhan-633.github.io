@@ -1,0 +1,21 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Personal portfolio generated from resume.pdf and deployed to GitHub Pages.",
+  "engines": {
+    "node": ">=20.10"
+  },
+  "scripts": {
+    "extract": "node scripts/extract-resume.mjs",
+    "build": "node scripts/build.mjs",
+    "verify": "node scripts/verify.mjs",
+    "test": "node --test scripts/test/parse.test.mjs",
+    "ci": "npm test && npm run extract && npm run build && npm run verify",
+    "preview": "npm run ci && npx --yes serve@14 dist"
+  },
+  "dependencies": {
+    "pdfjs-dist": "4.10.38"
+  }
+}
